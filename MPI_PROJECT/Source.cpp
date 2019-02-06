@@ -16,7 +16,7 @@ void PrintField(std::ostream& output, const std::vector<char>& field) {
 	std::string temp("");
 	for (int i = 1; i <= field_height; ++i) {
 		for (int j = 1; j <= field_width; ++j) {
-			temp += std::to_string(field[i * (field_width + 2) + j] ? 'x' : 'o');
+			temp += std::to_string((field[i * (field_width + 2) + j] ? 'x' : 'o'));
 		}
 		temp += "\n";
 	}
@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
 	int rc;
 	if (rc = MPI_Init(&argc, &argv))
 	{
-		std::cout << "Îøèáêà çàïóñêà, âûïîëíåíèå îñòàíîâëåíî " << std::endl;
+		std::cout << "ÃŽÃ¸Ã¨Ã¡ÃªÃ  Ã§Ã Ã¯Ã³Ã±ÃªÃ , Ã¢Ã»Ã¯Ã®Ã«Ã­Ã¥Ã­Ã¨Ã¥ Ã®Ã±Ã²Ã Ã­Ã®Ã¢Ã«Ã¥Ã­Ã® " << std::endl;
 		MPI_Abort(MPI_COMM_WORLD, rc);
 	}
 
@@ -98,9 +98,9 @@ int main(int argc, char* argv[]) {
 		);
 
 		if (myid == 0) {
-			// ìåñòî â êîòîðîì íóæíî îñòàíàâëèâàòü èãðó, åñëè äîñòèãíóò êîíåö. Íî íóæíî îñòàíîâèòü âñå ïðîöåññû 
+			// Ã¬Ã¥Ã±Ã²Ã® Ã¢ ÃªÃ®Ã²Ã®Ã°Ã®Ã¬ Ã­Ã³Ã¦Ã­Ã® Ã®Ã±Ã²Ã Ã­Ã Ã¢Ã«Ã¨Ã¢Ã Ã²Ã¼ Ã¨Ã£Ã°Ã³, Ã¥Ã±Ã«Ã¨ Ã¤Ã®Ã±Ã²Ã¨Ã£Ã­Ã³Ã² ÃªÃ®Ã­Ã¥Ã¶. ÃÃ® Ã­Ã³Ã¦Ã­Ã® Ã®Ã±Ã²Ã Ã­Ã®Ã¢Ã¨Ã²Ã¼ Ã¢Ã±Ã¥ Ã¯Ã°Ã®Ã¶Ã¥Ã±Ã±Ã» 
 			field_history = field;
-			// âìåñòî cout ìîæíî ïåðåäàòü ôàéëîâûé ïîòîê 
+			// Ã¢Ã¬Ã¥Ã±Ã²Ã® cout Ã¬Ã®Ã¦Ã­Ã® Ã¯Ã¥Ã°Ã¥Ã¤Ã Ã²Ã¼ Ã´Ã Ã©Ã«Ã®Ã¢Ã»Ã© Ã¯Ã®Ã²Ã®Ãª 
 			std::string filename(".\\dumps\\gen" + std::to_string(generation) + ".txt");
 			f.open(filename.c_str(), std::ios::out);
 			//PrintField(std::cout, field);
