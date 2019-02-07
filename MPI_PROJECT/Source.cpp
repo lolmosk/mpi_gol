@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include <fstream>
 #include <string>
+#include <chrono>
 
 const unsigned int field_width = 1 << 10;
 const unsigned int field_height = 1 << 10;
@@ -57,6 +58,7 @@ int main(int argc, char* argv[]) {
 		}
 		field_history = field;
 	}
+	auto start = std::chrono::system_clock::now();
 
 	for (size_t generation = 0; generation < generations; ++generation) {
 		MPI_Bcast(field.data(), field.size(), MPI_CHAR, 0, MPI_COMM_WORLD);
@@ -106,6 +108,11 @@ int main(int argc, char* argv[]) {
 			f.close();
 			std::cout << std::endl << std::endl << "GENERATION: " << generation << " ENDED" << std::endl << std::endl;
 		}
+	}
+
+	auto finish = std::chrono::system_clock::now();
+	if (myid == 0) {
+		std::cout << "Parallel life: " << std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count() << "ms" << std::endl;
 	}
 
 	MPI_Finalize();
