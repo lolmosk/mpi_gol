@@ -16,9 +16,9 @@ void PrintField(std::ostream& output, const std::vector<char>& field) {
 	std::string temp("");
 	for (int i = 1; i <= field_height; ++i) {
 		for (int j = 1; j <= field_width; ++j) {
-			temp += std::to_string(field[i * (field_width + 2) + j] ? 'x' : 'o');
+			temp += (field[i * (field_width + 2) + j] ? 'x' : 'o');
 		}
-		temp += "\n";
+		temp += '\n';
 	}
 	output << temp;
 }
