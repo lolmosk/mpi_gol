@@ -13,7 +13,8 @@ const unsigned int generations = 100;
 constexpr size_t N_THREADS = 8;
 
 void PrintField(std::ostream& output, const std::vector<char>& field) {
-	std::string temp("");
+	std::string temp;
+	temp.reserve((field_width + 1) * field_height );
 	for (int i = 1; i <= field_height; ++i) {
 		for (int j = 1; j <= field_width; ++j) {
 			temp += (field[i * (field_width + 2) + j] ? 'x' : 'o');
