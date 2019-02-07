@@ -17,7 +17,7 @@ void PrintField(std::ostream& output, const std::vector<char>& field) {
 	temp.reserve((field_width + 1) * field_height );
 	for (int i = 1; i <= field_height; ++i) {
 		for (int j = 1; j <= field_width; ++j) {
-			temp += (field[i * (field_width + 2) + j] ? 'x' : 'o');
+			temp += (field[i * (field_width + 2) + j + 1] ? 'x' : 'o');
 		}
 		temp += '\n';
 	}
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
 	MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
 	MPI_Comm_rank(MPI_COMM_WORLD, &myid);
 
-	std::vector<char> field((field_width + 2) * (field_height + 2));
+	std::vector<char> field((field_width + 2) * (field_height + 2) + 1);
 	std::vector<char> field_history;
 
 	if (myid == 0) {
@@ -52,11 +52,10 @@ int main(int argc, char* argv[]) {
 
 		for (int i = 1; i <= field_height; ++i) {
 			for (int j = 1; j <= field_width; ++j) {
-				field[i * (field_width) + j] = distribution(engine);
+				field[i * (field_width + 2) + j + 1] = distribution(engine);
 			}
 		}
 		field_history = field;
-
 	}
 
 	for (size_t generation = 0; generation < generations; ++generation) {
@@ -76,12 +75,10 @@ int main(int argc, char* argv[]) {
 		for (size_t i = 0; i < intermediate.size(); ++i) {
 			if (i % (field_width + 2) == 0 || i % (field_width + 2) == (field_width + 1)) {
 				intermediate[i] = 0;
-			}
-			else {
-				if (intermediate[i] == 3 || intermediate[i] == 2 && field[(field_width + 2) * (myid + 1) + i]) {
+			} else {
+				if (intermediate[i] == 3 || (intermediate[i] == 2 && field[(field_width + 2) * (myid + 1) + i + 1])) {
 					intermediate[i] = 1;
-				}
-				else {
+				} else {
 					intermediate[i] = 0;
 				}
 			}
@@ -91,7 +88,7 @@ int main(int argc, char* argv[]) {
 			intermediate.data(),
 			intermediate.size(),
 			MPI_CHAR,
-			field.data() + (field_width + 2),
+			field.data() + (field_width + 3),
 			(field_width + 2) * field_height,
 			MPI_CHAR,
 			0,
