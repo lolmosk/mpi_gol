@@ -13,16 +13,14 @@ const unsigned int generations = 100;
 constexpr size_t N_THREADS = 8;
 
 void PrintField(std::ostream& output, const std::vector<char>& field) {
-	//std::string temp("");
+	std::string temp("");
 	for (int i = 1; i <= field_height; ++i) {
 		for (int j = 1; j <= field_width; ++j) {
-			output << field[i * (field_width + 2) + j] ? 'x' : 'o';
-			//temp += std::to_string(field[i * (field_width + 2) + j] ? 'x' : 'o');
+			temp += std::to_string(field[i * (field_width + 2) + j] ? 'x' : 'o');
 		}
-		output << "\n";
-		//temp += "\n";
+		temp += "\n";
 	}
-	//output << temp;
+	output << temp;
 }
 
 static_assert(field_height % N_THREADS == 0, "Incorrect field size");
