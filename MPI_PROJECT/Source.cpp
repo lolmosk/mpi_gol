@@ -10,7 +10,7 @@
 
 const unsigned int field_width = 1 << 10;
 const unsigned int field_height = 1 << 10;
-const unsigned int generations = 100;
+const unsigned int generations = 10;
 constexpr size_t N_THREADS = 8;
 
 void PrintField(std::ostream& output, const std::vector<char>& field) {
@@ -28,6 +28,7 @@ void PrintField(std::ostream& output, const std::vector<char>& field) {
 static_assert(field_height % N_THREADS == 0, "Incorrect field size");
 
 void SingleThread() {
+	std::cout << "SINGLE PROCESS" << std::endl;
     std::fstream f;
     constexpr int SEED = 1646868;
     constexpr std::array<size_t, 8> HARDCODE_OFFSET =
@@ -80,12 +81,12 @@ void SingleThread() {
         // место в котором нужно останавливать игру, если достигнут конец. Но нужно остановить все процессы
         field_history = field;
         // вместо cout можно передать файловый поток
-        std::string filename(".\\dumps\\gen" + std::to_string(generation) + ".txt");
+        std::string filename(".\\dumps_single\\gen" + std::to_string(generation) + ".txt");
         f.open(filename.c_str(), std::ios::out);
         //PrintField(std::cout, field);
         PrintField(f, field);
         f.close();
-        std::cout << std::endl << std::endl << "GENERATION: " << generation << " ENDED" << std::endl << std::endl;
+        //std::cout << std::endl << std::endl << "GENERATION: " << generation << " ENDED" << std::endl << std::endl;
     }
 
     auto finish = std::chrono::system_clock::now();
@@ -103,7 +104,7 @@ void MultiThread(int argc, char* argv[]) {
     int rc;
     if (rc = MPI_Init(&argc, &argv))
     {
-        std::cout << "Ошибка запуска, выполнение остановлено " << std::endl;
+        std::cout << "Initializing error" << std::endl;
         MPI_Abort(MPI_COMM_WORLD, rc);
     }
 
@@ -114,6 +115,7 @@ void MultiThread(int argc, char* argv[]) {
     std::vector<char> field_history;
 
     if (myid == 0) {
+		std::cout << "MULTY PROCESS" << std::endl;
         std::mt19937 engine(SEED);
         std::uniform_int_distribution<> distribution(0, 1);
 
@@ -167,27 +169,27 @@ void MultiThread(int argc, char* argv[]) {
             // место в котором нужно останавливать игру, если достигнут конец. Но нужно остановить все процессы
             field_history = field;
             // вместо cout можно передать файловый поток
-            std::string filename(".\\dumps\\gen" + std::to_string(generation) + ".txt");
+            std::string filename(".\\dumps_multy\\gen" + std::to_string(generation) + ".txt");
             f.open(filename.c_str(), std::ios::out);
             //PrintField(std::cout, field);
             PrintField(f, field);
             f.close();
-            std::cout << std::endl << std::endl << "GENERATION: " << generation << " ENDED" << std::endl << std::endl;
+            //std::cout << std::endl << std::endl << "GENERATION: " << generation << " ENDED" << std::endl << std::endl;
         }
     }
 
     auto finish = std::chrono::system_clock::now();
     if (myid == 0) {
         std::cout << "Parallel life: " << std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count() << "ms" << std::endl;
+		system("pause");
     }
 
     MPI_Finalize();
-    system("pause");
 }
 
 
 int main(int argc, char* argv[]) {
-    SingleThread();
-    // MultiThread(argc, argv);
+    //SingleThread();
+    MultiThread(argc, argv);
     return 0;
 }
